@@ -1,0 +1,27 @@
+version: "2"
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./psql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pguser
+      POSTGRES_DB: pgdb
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+       - DB_USER=pguser
+       - DB_PASSWORD=pguser
+       - DB_HOST=postgres
+       - DB_NAME=pgdb
+       - POOL_MODE=transaction
+       - ADMIN_USERS=postgres, pguser
+    ports:
+      - "5432:5432"
+    depends_on:
+      - postgres
+
+volumes:
+  psql_data:
